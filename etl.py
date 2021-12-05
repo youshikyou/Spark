@@ -75,6 +75,7 @@ def process_song_data(spark, input_data, output_data):
     
     artists_table.printSchema()
     artists_table.show()
+    
     # write artists table to parquet files
     artists_table.write.mode('overwrite').parquet(path=output_data + "artists.parquet")
 
@@ -102,13 +103,14 @@ def process_log_data(spark, input_data, output_data):
     df.createOrReplaceTempView("log_data_temp")
     # extract columns for users table    
     users_table = spark.sql("""
-        SELECT userId AS user_id, firstName AS first_name,lastName AS last_name,gender,level
+        SELECT DISTINCT userId AS user_id, firstName AS first_name,lastName AS last_name,gender,level
         FROM log_data_temp
     
     """)                  
     
     users_table.printSchema()
     users_table.show()
+    
     # write users table to parquet files
     users_table.write.mode('overwrite').parquet(path=output_data + "users.parquet")
 
@@ -128,8 +130,9 @@ def process_log_data(spark, input_data, output_data):
     
     time_table.printSchema()
     time_table.show()
+    
     # write time table to parquet files partitioned by year and month
-    time_table.write.mode('overwrite').partitionBy("year", "month")            
+    time_table.write.mode('overwrite').partitionBy("year", "month").parquet(path=output_data + "time_table.parquet")            
                             
     # read in song data to use for songplays table
     song_df = spark.sql(""" SELECT * FROM song_data_temp """)
@@ -141,10 +144,12 @@ def process_log_data(spark, input_data, output_data):
                                 'artist_id', 'sessionId','location','userAgent',\
                                 year(df['start_time']).alias('year'), month(df['start_time']).alias('month'))\
                         .withColumn("songplay_id", monotonically_increasing_id())
-
+    
     # write songplays table to parquet files partitioned by year and month
-    songplays_table.write.mode("overwrite").partitionBy('year', 'month').parquet(path=output_data + 'songplays')
-
+    songplays_table.write.mode("overwrite").partitionBy('year', 'month').parquet(path=output_data + 'songplays.parquet')
+    songplays_table.printSchema()
+    songplays_table.show()
+    
 def main():
     spark = create_spark_session()
     input_data = "s3a://udacity-dend/"
@@ -153,7 +158,7 @@ def main():
     process_song_data(spark, input_data, output_data)    
     process_log_data(spark, input_data, output_data)
                             
-    check(spark)
+    #check(spark)
 
 if __name__ == "__main__":
     main()
