@@ -1,0 +1,14 @@
+SparkSession is main entry for dataframe
+
+df.show()
+df.columns()
+df.count()
+df.grouby()
+df.select()
+df.dropDuplicates()
+df.filter(df.col == "xxx")
+df.toPandas(), pandas is in-memory and single server based structures.
+spark.read.csv(file_path, header=True, inferSchema=True)
+df.printSchema()
+df.describe().show()
+df.createOrReplaceTempView()
