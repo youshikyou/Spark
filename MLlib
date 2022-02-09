@@ -1,0 +1,102 @@
+Collaborative filtering(recommender engines):Produce recommendations
+Classication:Identifying to which of a set of categories a new observation
+Clustering:Groups data based on similar characteristics
+
+pyspark.mllib.recommendation
+from pyspark.mllib.recommendation import ALS
+
+pyspark.mllib.classification
+from pyspark.mllib.classification import LogisticRegressionWithLBFGS
+
+pyspark.mllib.clustering
+from pyspark.mllib.clustering import KMeans
+
+=========recommendation==============
+from pyspark.mllib.recommendation import Rating 
+r = Rating(user = 1, product = 2, rating = 5.0)
+(r[0], r[1], r[2])
+(1, 2, 5.0)
+
+data = sc.parallelize([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+training, test=data.randomSplit([0.6, 0.4])
+training.collect()
+test.collect()
+
+r1 = Rating(1, 1, 1.0)
+r2 = Rating(1, 2, 2.0)
+r3 = Rating(2, 1, 2.0)
+ratings = sc.parallelize([r1, r2, r3])
+ratings.collect()
+result is [Rating(user=1, product=1, rating=1.0), Rating(user=1, product=2, rating=2.0), Rating(user=2, product=1, rating=2.0)]
+
+model = ALS.train(ratings, rank=10, iterations=10)
+unrated_RDD = sc.parallelize([(1, 2), (1, 1)])
+predictions = model.predictAll(unrated_RDD)
+predictions.collect()
+result is [Rating(user=1, product=1, rating=1.0000278574351853), Rating(user=1, product=2, rating=1.9890355703778122)]
+
+
+=========classification==============
+denseVec = Vectors.dense([1.0, 2.0, 3.0])
+DenseVector([1.0, 2.0, 3.0])
+
+sparseVec = Vectors.sparse(4, {1: 1.0, 3: 5.5})
+SparseVector(4, {1: 1.0, 3: 5.5})
+
+positive = LabeledPoint(1.0, [1.0, 0.0, 3.0])
+negative = LabeledPoint(0.0, [2.0, 1.0, 1.0])
+print(positive)
+LabeledPoint(1.0, [1.0,0.0,3.0])
+
+print(negative)
+LabeledPoint(0.0, [2.0,1.0,1.0])
+
+from pyspark.mllib.feature import HashingTF
+sentence = "hello hello world"
+words = sentence.split()
+tf = HashingTF(10000) 
+tf.transform(words)
+SparseVector(10000, {3065: 1.0, 6861: 2.0})
+
+data = [  LabeledPoint(0.0, [0.0, 1.0]),        
+LabeledPoint(1.0, [1.0, 0.0]),]
+RDD = sc.parallelize(data)
+lrm = LogisticRegressionWithLBFGS.train(RDD)
+lrm.predict([1.0, 0.0]) result is 1
+lrm.predict([0.0, 1.0]) result is 0
+
+
+
+=========clustering==============
+
+from pyspark.mllib.clustering import KMeans
+model = KMeans.train(RDD, k = 2, maxIterations = 10)
+model.clusterCenters
+[array([12.25573171,  2.28939024]), array([13.636875  ,  2.43239583])]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
