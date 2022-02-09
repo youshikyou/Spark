@@ -3,18 +3,26 @@ Spark Session is used to create DataFrame,register DataFrames,execute SQL querie
 Spark Session is available in PySpark shell as spark
 
 
+df_csv = spark.read.csv(path to the file, header=True, inferSchema=True)
+df_json = spark.read.json(path to the file, header=True, inferSchema=True)
+df_txt = spark.read.txt(path to the file, header=True, inferSchema=True)
 
-
-
+df.select()
 df.show()
 df.columns()
 df.count()
 df.grouby()
-df.select()
+df.orderby()
 df.dropDuplicates()
 df.filter(df.col == "xxx")
+df.withColumnRenamed("name1","name2")
 df.toPandas(), pandas is in-memory and single server based structures.
-spark.read.csv(file_path, header=True, inferSchema=True)
 df.printSchema()
 df.describe().show()
-df.createOrReplaceTempView()
+df.createOrReplaceTempView("name")
+spark.sql(query)
+
+Handy Spark is a package designed to improve PySpark user experience
+test_df = spark.read.csv('test.csv', header=True, inferSchema=True)
+hdf = test_df.toHandy()
+hdf.cols["Age"].hist()
