@@ -1,3 +1,6 @@
+
+Spark Context is the main entry point for creating RDDs
+
 BasicRDD : Transformations
 map(),filter(),flatMap(),and union()
 
