@@ -1,4 +1,10 @@
-SparkSession is main entry for dataframe
+Spark Session provides a single point of entry to interact with Spark DataFrames
+Spark Session is used to create DataFrame,register DataFrames,execute SQL queries 
+Spark Session is available in PySpark shell as spark
+
+
+
+
 
 df.show()
 df.columns()
