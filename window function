@@ -1,0 +1,6 @@
+from pyspark.sql.functions import lag
+from pyspark.sql.window import Window
+# Create Window
+w = Window().orderBy(m_df['DATE'])
+# Create lagged column
+m_df = m_df.withColumn('MORTGAGE-1wk', lag('MORTGAGE', count=1).over(w))
