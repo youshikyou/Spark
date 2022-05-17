@@ -1,0 +1,11 @@
+# Import needed functions
+from  pyspark.sql.functions import when
+
+# Create boolean conditions for string matches
+has_attached_garage = df['GARAGEDESCRIPTION'].like('%Attached Garage%')
+has_detached_garage = df['GARAGEDESCRIPTION'].like('%Detached Garage%')
+
+# Conditional value assignment 
+df = df.withColumn('has_attached_garage', (when(has_attached_garage, 1)
+                                          .when(has_detached_garage, 0)
+                                          .otherwise(None)))
